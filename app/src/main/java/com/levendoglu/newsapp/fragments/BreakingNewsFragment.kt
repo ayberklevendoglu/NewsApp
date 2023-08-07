@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.levendoglu.newsapp.Adapter
+import com.google.gson.Gson
+import com.levendoglu.newsapp.R
+import com.levendoglu.newsapp.adapter.Adapter
 import com.levendoglu.newsapp.api.NewsApiService
 import com.levendoglu.newsapp.databinding.FragmentBreakingNewsBinding
 import com.levendoglu.newsapp.model.Article
@@ -40,7 +43,7 @@ class BreakingNewsFragment : Fragment() {
                     response.body()?.let {
                         val data = response.body()!!.articles
                         article = ArrayList(data)
-                        adapter = Adapter(article)
+                        adapter = Adapter(article,::onNewsClick)
                         binding.rvBreakingNews.adapter = adapter
                     }
                 }
@@ -50,5 +53,11 @@ class BreakingNewsFragment : Fragment() {
             }
 
         })
+    }
+
+    private fun onNewsClick(article: Article) {
+        val bundle = Bundle()
+        bundle.putString("title", Gson().toJson(article))
+        findNavController().navigate(R.id.action_breakingNewsFragment_to_articleFragment,bundle)
     }
 }

@@ -5,16 +5,38 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.levendoglu.newsapp.R
+import com.google.gson.Gson
+import com.levendoglu.newsapp.databinding.FragmentArticleBinding
+import com.levendoglu.newsapp.model.Article
+import com.squareup.picasso.Picasso
 
 class ArticleFragment : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article, container, false)
+    private lateinit var binding:FragmentArticleBinding
+    private lateinit var article:Article
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentArticleBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setInitialData()
+
+    }
+
+    private fun setInitialData() {
+        val jsonNote = arguments?.getString("title")
+        if (jsonNote != null){
+            article = Gson().fromJson(jsonNote,Article::class.java)
+            article.let {
+                binding.articleTitle.text = it.title
+                binding.articleContent.text= it.content
+                binding.articleAuthor.text = it.author
+                binding.articlePublish.text = it.publishedAt
+                Picasso.get()
+                    .load(it.urlToImage)
+                    .into(binding.articleImage)
+            }
+        }
+    }
 }

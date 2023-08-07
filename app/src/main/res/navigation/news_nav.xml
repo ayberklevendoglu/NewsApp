@@ -9,12 +9,20 @@
         android:id="@+id/breakingNewsFragment"
         android:name="com.levendoglu.newsapp.fragments.BreakingNewsFragment"
         android:label="fragment_breaking_news"
-        tools:layout="@layout/fragment_breaking_news" />
+        tools:layout="@layout/fragment_breaking_news" >
+        <action
+            android:id="@+id/action_breakingNewsFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchNewsFragment"
         android:name="com.levendoglu.newsapp.fragments.SearchNewsFragment"
         android:label="fragment_search_news"
-        tools:layout="@layout/fragment_search_news" />
+        tools:layout="@layout/fragment_search_news" >
+        <action
+            android:id="@+id/action_searchNewsFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+    </fragment>
     <fragment
         android:id="@+id/articleFragment"
         android:name="com.levendoglu.newsapp.fragments.ArticleFragment"
