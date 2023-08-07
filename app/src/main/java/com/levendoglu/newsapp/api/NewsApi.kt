@@ -11,4 +11,9 @@ interface NewsApi {
         @Query("country") country:String,
         @Query("apiKey") apiKey:String,
     ) : Call<NewsModel>
+    @GET("everything")
+    fun searchNews(
+        @Query("q") q:String,
+        @Query("apiKey") apiKey:String
+    ) : Call<NewsModel>
 }

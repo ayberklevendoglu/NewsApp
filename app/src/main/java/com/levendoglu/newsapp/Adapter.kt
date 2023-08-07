@@ -1,6 +1,6 @@
 package com.levendoglu.newsapp
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.levendoglu.newsapp.model.Article
 import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Date
-import java.util.Locale
 
 class Adapter(private val newsList: List<Article>):RecyclerView.Adapter<Adapter.articleViewHolder>() {
     inner class articleViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
@@ -34,12 +30,14 @@ class Adapter(private val newsList: List<Article>):RecyclerView.Adapter<Adapter.
     override fun onBindViewHolder(holder: articleViewHolder, position: Int) {
         val article = newsList[position]
 
-
         holder.apply {
             title.text = article.title
             publish.text = article.publishedAt
             author.text = article.author
-            Picasso.get().load(article.urlToImage).into(image)
+            Picasso.get().load(article.urlToImage)
+                .resize(800,400)
+                .centerCrop()
+                .into(image)
         }
     }
 
