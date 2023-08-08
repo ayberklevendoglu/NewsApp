@@ -15,13 +15,8 @@ class ArticleFragment : Fragment() {
     private lateinit var article:Article
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentArticleBinding.inflate(inflater,container,false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         setInitialData()
-
+        return binding.root
     }
 
     private fun setInitialData() {

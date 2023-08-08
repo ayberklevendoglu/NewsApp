@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -14,18 +13,24 @@ import com.levendoglu.newsapp.adapter.Adapter
 import com.levendoglu.newsapp.api.NewsApiService
 import com.levendoglu.newsapp.databinding.FragmentSearchNewsBinding
 import com.levendoglu.newsapp.model.Article
-import com.levendoglu.newsapp.model.NewsModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class SearchNewsFragment : Fragment() {
     private lateinit var binding:FragmentSearchNewsBinding
     private val apiKey = "a4845d0f4b0845cb9c509e82928ff4c9"
     private lateinit var article: ArrayList<Article>
     private lateinit var adapter: Adapter
+    private lateinit var job: Job
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchNewsBinding.inflate(inflater,container,false)
+
+        binding.rvSearch.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSearch.setHasFixedSize(true)
         binding.search.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 filterList(query)
@@ -37,15 +42,28 @@ class SearchNewsFragment : Fragment() {
                 return true
             }
         })
+
         return binding.root
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.rvSearch.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvSearch.setHasFixedSize(true)
     }
     private fun filterList(query:String?){
         if (query != null){
+            job = CoroutineScope(Dispatchers.IO).launch {
+                val response = NewsApiService.api.searchNews(query,apiKey)
+                withContext(Dispatchers.Main){
+                    if (response.isSuccessful && response.body() != null){
+                        response.body()?.let {
+                            val data = response.body()!!.articles
+                            article = ArrayList(data)
+                            article.let {
+                                adapter = Adapter(it,::onNewsClick)
+                                binding.rvSearch.adapter = adapter
+                            }
+                        }
+                    }
+                }
+            }
+
+            /*
             val call: Call<NewsModel> = NewsApiService.api.searchNews(query,apiKey)
             call.enqueue(object : Callback<NewsModel> {
                 override fun onResponse(call: Call<NewsModel>, response: Response<NewsModel>) {
@@ -62,6 +80,7 @@ class SearchNewsFragment : Fragment() {
                     Toast.makeText(requireContext(),t.localizedMessage, Toast.LENGTH_LONG).show()
                 }
             })
+             */
         }
     }
 
@@ -69,5 +88,10 @@ class SearchNewsFragment : Fragment() {
         val bundle = Bundle()
         bundle.putString("title",Gson().toJson(article))
         findNavController().navigate(R.id.action_searchNewsFragment_to_articleFragment,bundle)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }
