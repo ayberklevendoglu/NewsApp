@@ -51,27 +51,6 @@ class BreakingNewsFragment : Fragment() {
                 }
             }
         }
-
-
-        /*val call:Call<NewsModel> = NewsApiService.api.getBreakingNews("us",apiKey)
-        call.enqueue(object : Callback<NewsModel>{
-            override fun onResponse(call: Call<NewsModel>, response: Response<NewsModel>) {
-                if (response.isSuccessful && response.body() != null){
-                    response.body()?.let {
-                        val data = response.body()!!.articles
-                        article = ArrayList(data)
-                        adapter = Adapter(article,::onNewsClick)
-                        binding.rvBreakingNews.adapter = adapter
-                    }
-                }
-            }
-            override fun onFailure(call: Call<NewsModel>, t: Throwable) {
-                Toast.makeText(requireContext(),t.localizedMessage,Toast.LENGTH_LONG).show()
-            }
-
-        })
-
-         */
     }
 
     private fun onNewsClick(article: Article) {

@@ -62,25 +62,6 @@ class SearchNewsFragment : Fragment() {
                     }
                 }
             }
-
-            /*
-            val call: Call<NewsModel> = NewsApiService.api.searchNews(query,apiKey)
-            call.enqueue(object : Callback<NewsModel> {
-                override fun onResponse(call: Call<NewsModel>, response: Response<NewsModel>) {
-                    if (response.isSuccessful && response.body() != null){
-                        response.body()?.let {
-                            val data = response.body()!!.articles
-                            article = ArrayList(data)
-                            adapter = Adapter(article,::onNewsClick)
-                            binding.rvSearch.adapter = adapter
-                        }
-                    }
-                }
-                override fun onFailure(call: Call<NewsModel>, t: Throwable) {
-                    Toast.makeText(requireContext(),t.localizedMessage, Toast.LENGTH_LONG).show()
-                }
-            })
-             */
         }
     }
 
@@ -90,8 +71,4 @@ class SearchNewsFragment : Fragment() {
         findNavController().navigate(R.id.action_searchNewsFragment_to_articleFragment,bundle)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
 }
