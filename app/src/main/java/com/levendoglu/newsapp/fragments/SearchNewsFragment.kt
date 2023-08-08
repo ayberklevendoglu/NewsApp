@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import com.levendoglu.newsapp.adapter.Adapter
 import com.levendoglu.newsapp.api.NewsApiService
 import com.levendoglu.newsapp.databinding.FragmentSearchNewsBinding
 import com.levendoglu.newsapp.model.Article
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,8 +48,11 @@ class SearchNewsFragment : Fragment() {
         return binding.root
     }
     private fun filterList(query:String?){
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Toast.makeText(requireContext(),throwable.localizedMessage, Toast.LENGTH_LONG).show()
+        }
         if (query != null){
-            job = CoroutineScope(Dispatchers.IO).launch {
+            job = CoroutineScope(Dispatchers.IO + handler).launch {
                 val response = NewsApiService.api.searchNews(query,apiKey)
                 withContext(Dispatchers.Main){
                     if (response.isSuccessful && response.body() != null){
